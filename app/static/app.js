@@ -2,7 +2,8 @@ const $ = id => document.getElementById(id);
 const state = { studies: [], targets: [], study: null, series: null, slice: 0, labels: {}, revision: 0,
   dirty: false, saving: false, image: null, imageOK: false, imageRequest: 0, studyRequest: 0, abort: null,
   center: null, width: null, zoom: 1, pan: [0,0], invert: false, reviewer: '' };
-const names = {'ACL':'Anterior cruciate ligament','MCL':'Medial collateral ligament','Medial Meniscus':'Medial meniscal tear',
+const findingTitles = {'ACL':'ACL injury','MCL':'MCL injury','Medial Meniscus':'Medial meniscus tear','Lateral Meniscus':'Lateral meniscus tear'};
+const names = {'ACL':'Anterior cruciate ligament injury','MCL':'Medial collateral ligament injury','Medial Meniscus':'Medial meniscal tear',
   'Lateral Meniscus':'Lateral meniscal tear','Medial OA':'Medial compartment osteoarthritis','Lateral OA':'Lateral compartment osteoarthritis',
   'PF OA':'Patellofemoral osteoarthritis','Effusion':'Joint fluid','Synovitis':'Synovial inflammation',"Baker's":'Popliteal cyst',
   'Contusion':'Bone contusion','Fracture':'Bone fracture'};
@@ -111,11 +112,11 @@ $('invertBtn').onclick=()=>{state.invert=!state.invert;$('invertBtn').setAttribu
 $('resetBtn').onclick=()=>{if(state.series)selectSeries(state.series);};$('fullBtn').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else $('stage').requestFullscreen().catch(e=>toast(e.message));};
 function buildFindings(){
   $('findings').replaceChildren();for(const target of state.targets){const row=document.createElement('div');row.className='finding';
-    const title=document.createElement('div');title.className='finding-name';title.textContent=target;const sub=document.createElement('small');sub.textContent=names[target];title.append(sub);
-    const controls=document.createElement('div');controls.className='segmented';controls.setAttribute('role','group');controls.setAttribute('aria-label',target);
+    const title=document.createElement('div');title.className='finding-name';title.textContent=findingTitles[target] || target;const sub=document.createElement('small');sub.textContent=names[target];title.append(sub);
+    const controls=document.createElement('div');controls.className='segmented';controls.setAttribute('role','group');controls.setAttribute('aria-label',findingTitles[target] || target);
     for(const [text,value] of [['Yes',1],['No',0],['×',null]]){const b=document.createElement('button');b.type='button';b.textContent=text;b.disabled=!state.study;
       b.className=value===null?'clear':state.labels[target]===value?value?'selected-yes':'selected-no':'';
-      b.setAttribute('aria-label',value===null?`Clear ${target}`:`${target}: ${text}`);b.setAttribute('aria-pressed',String(state.labels[target]===value));
+      b.setAttribute('aria-label',value===null?`Clear ${findingTitles[target] || target}`:`${findingTitles[target] || target}: ${text}`);b.setAttribute('aria-pressed',String(state.labels[target]===value));
       b.onclick=()=>{state.labels[target]=value;markDirty();buildFindings();};controls.append(b);}
     row.append(title,controls);$('findings').append(row);
   } updateButtons();
