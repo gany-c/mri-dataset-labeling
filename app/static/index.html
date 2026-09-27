@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knee Review · Study workspace</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body>
+<section id="loginScreen" class="login-screen">
+  <div class="login-art"><div class="brand"><span class="brand-mark">K</span>Knee Review</div><div><span class="eyebrow">A SECOND LOOK. A BETTER DATASET.</span><h1>Expert eyes.<br>Thoughtful labels.</h1><p>A shared workspace for reviewing knee MRI studies, one finding at a time.</p></div><small>LOCAL RESEARCH WORKSPACE · RSNA KNEE MRI</small></div>
+  <form id="loginForm" class="login-form"><span class="eyebrow">WELCOME TO THE REVIEW TEAM</span><h2>Your perspective matters.</h2><p>Sign in to review studies together. One shared assessment, with every edit saved to its author.</p>
+  <label>Reviewer name<input id="name" required minlength="2" maxlength="60" autocomplete="username" placeholder="e.g. Dr. Meera"></label>
+  <label>Password<input id="password" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters"></label>
+  <label class="check"><input type="checkbox" id="register"> I’m a new reviewer — create my local account</label>
+  <button class="primary" type="submit">Enter workspace <span>→</span></button><p id="loginError" class="error" role="alert"></p>
+  <small>Accounts and annotations are stored on this machine.</small></form>
+</section>
+<div id="workspace" hidden>
+ <header class="topbar"><div class="brand"><span class="brand-mark">K</span>Knee Review <span class="local-pill">LOCAL</span></div><div class="top-actions"><button id="importBtn">↻ Scan data folder</button><button id="exportBtn">↓ Export labels</button><span id="reviewerName"></span><button id="logoutBtn" class="quiet">Sign out</button></div></header>
+ <div class="workspace-grid">
+  <aside class="queue"><div class="queue-heading"><span class="eyebrow">YOUR WORKLIST</span><h2>Studies <span id="studyCount">0</span></h2><p id="progressText">Ready when you are.</p></div>
+   <div class="queue-tools"><input id="search" type="search" placeholder="Search study ID…" aria-label="Search study ID"><div class="filter-row"><select id="datasetFilter" aria-label="Dataset"><option value="real">Real studies</option><option value="demo">Practice scans</option></select><select id="statusFilter" aria-label="Review status"><option value="all">All statuses</option><option value="unstarted">Not started</option><option value="draft">In progress</option><option value="complete">Complete</option></select></div></div>
+   <nav id="studyList" aria-label="Studies"></nav><div class="queue-footer"><span class="status-dot"></span>Saved on this machine<br><small id="dataPath"></small></div>
+  </aside>
+  <main class="main-view"><div id="emptyState" class="empty"><span class="empty-symbol">▤</span><h2>Your next study starts here.</h2><p>Download DICOM studies into your data folder, then choose “Scan data folder”. You can also explore the viewer with practice scans.</p><button id="practiceBtn">Open practice scans →</button></div>
+   <div id="studyWorkspace" hidden><div class="study-heading"><div><span class="eyebrow" id="studyEyebrow">STUDY REVIEW</span><h1 id="studyTitle">Knee MRI</h1><p id="studyUid"></p></div><div id="demoBadge" class="demo-badge" hidden>SYNTHETIC PRACTICE · NOT A PATIENT</div></div>
+    <details id="reportPanel" class="report-panel"><summary>Original radiology report</summary><p class="report-caption">Original report text · not translated · findings below are your shared assessment</p><div id="reportText" class="report-text" dir="auto"></div></details>
+   <div class="series-tabs" id="seriesTabs" role="group" aria-label="MRI series"></div>
+    <div class="viewer-toolbar"><span id="seriesTitle"></span><div><button id="invertBtn" aria-pressed="false">Invert</button><button id="resetBtn">Reset view</button><button id="fullBtn">Expand ⛶</button></div></div>
+    <div class="image-stage" id="stage"><canvas id="canvas" aria-label="MRI slice viewer"></canvas><div class="image-overlay top-left"><span id="planeLabel"></span><small id="sliceMeta"></small></div><div class="image-overlay bottom-left" id="windowMeta"></div><div id="imageMessage" class="image-message" role="status">Select a series</div><span id="orientationTop" class="orientation ot"></span><span id="orientationBottom" class="orientation ob"></span><span id="orientationLeft" class="orientation ol"></span><span id="orientationRight" class="orientation or"></span></div>
+    <div class="slice-controls"><button id="prevSlice" aria-label="Previous slice">←</button><span id="sliceCount">0 / 0</span><input id="sliceSlider" type="range" min="0" max="0" value="0" aria-label="Slice"><button id="nextSlice" aria-label="Next slice">→</button></div>
+    <div class="view-controls"><label>Window <input id="windowWidth" type="range" min="1" max="4000" value="1000"></label><label>Level <input id="windowCenter" type="range" min="-1000" max="4000" value="500"></label><label>Zoom <input id="zoom" type="range" min="50" max="400" value="100"></label></div>
+    <div class="viewer-help">Scroll / ↑ ↓ to move through slices <span>·</span> Drag to pan <span>·</span> Ctrl + scroll to zoom</div><p id="geometryWarning" class="warning"></p>
+   </div>
+  </main>
+  <aside class="assessment"><div class="assessment-heading"><span class="eyebrow">SHARED ASSESSMENT</span><h2>Twelve findings</h2><p>One record, reviewed together.</p><div class="completion"><span id="answerCount">0 of 12 answered</span><span id="saveStatus" role="status">No study selected</span></div><progress id="answerProgress" max="12" value="0"></progress><small id="lastEditor"></small></div>
+   <form id="reviewForm"><div id="findings"></div><div class="notes-area"><label for="notes">Review notes <span>Optional</span></label><textarea id="notes" placeholder="Uncertainty, image quality, or findings to revisit…" maxlength="10000" rows="3"></textarea><p>Leave a finding unanswered if unsure. A blank is never treated as “No”.</p></div><div class="save-actions"><button id="saveDraft" type="button">Save draft</button><button id="completeBtn" class="primary" type="submit">Complete review ✓</button><button id="nextStudy" type="button" class="quiet">Next study →</button></div></form>
+  </aside>
+ </div>
+</div>
+<div id="toast" class="toast" hidden role="status"></div>
+<dialog id="exportDialog"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form><span class="eyebrow">TAKE YOUR LABELS WITH YOU</span><h2>Export study labels</h2><p>One row per study, with the twelve finding columns. Yes = 1, No = 0. Unanswered findings stay blank.</p><label>Dataset<select id="exportDataset"><option value="real">Real studies</option><option value="demo">Synthetic practice only</option></select></label><p class="export-note">Exports the latest saved shared answers, including drafts. Unsaved changes are excluded. Download review status to see completeness and the last editor.</p><button id="downloadLabels" class="primary">↓ Download labels.csv</button><button id="downloadAudit">Download review status</button></dialog>
+<script src="/static/app.js"></script></body></html>
